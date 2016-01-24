@@ -3,7 +3,7 @@
 
 \bibliography{include/references.bib}
 
-\title{Distributed Systems: Assignment 2\\Middleware: Object Request Brokers}
+\title{Distributed Systems: Lab 2\\Middleware: Object Request Brokers}
 \author{\input{include/authors.tex}}
 \date{December 20, 2015}
 
@@ -12,25 +12,25 @@
 
 \section{Introduction}
 \input{include/assets/name-service.tex}
-In the previous assignment, you implemented a distributed system with a single
-server and an arbitrary number of clients. The clients were required to
-explicitly specify the hostname and port of the server in order to interact with
-the database. It was not convenient as this information could easily change. The
+In the previous lab, you implemented a distributed system with a single server
+and an arbitrary number of clients. The clients were required to explicitly
+specify the hostname and port of the server in order to interact with the
+database. It was not convenient as this information could easily change. The
 situation becomes significantly more complicated when there are many servers
 joining and leaving the network in an arbitrary way. Such a freedom is at heart
 of a distributed system, and it is exactly what we aim to achieve by the end of
-the programming project. In this assignment, you will implement the code that
-will allow the participants of your distributed system to smoothly discover each
+the programming project. In this lab, you will implement the code that will
+allow the participants of your distributed system to smoothly discover each
 other. At this point, we shift our focus from the client-server to peer-to-peer
 model \cite{lecture3} and refer to participants as peers.
 
 The problem outlined above is solved by introducing into our distributed system
 a so-called middleware \cite{lecture4}; carefully read the corresponding
-sections in \cite{lecture4} to get a better understanding of the assignment.
-Loosely speaking, a middleware of a distributed system is an auxiliary layer
-that hides all the complexity of the communication process between peers. Such a
-layer is typically divided into two parts: object services (\eg, name services)
-and object request brokers.
+sections in \cite{lecture4} to get a better understanding of the lab. Loosely
+speaking, a middleware of a distributed system is an auxiliary layer that hides
+all the complexity of the communication process between peers. Such a layer is
+typically divided into two parts: object services (\eg, name services) and
+object request brokers.
 
 A name service is a global registrar of all the objects/peers that participate
 in the network. Upon request, a name service can, for instance, provide
@@ -51,12 +51,12 @@ A name service is already present in the LiU network for you to use. The source
 code of the name service will not be given; however, the interface of this
 machine will be described (see \sref{interface}) such that you can employ it for
 your purposes by sending adequate messages. Consequently, your first task is to
-learn how to interact with this auxiliary component. To this end, in this
-assignment, you will put aside your previous code and implement a simple
-application with the only purpose of registering in the name service and listing
-the addresses of the peers that are currently present in the network. This
-knowledge will help you to seamlessly incorporate the name service into your
-distributed database of fortunes in the future assignments.
+learn how to interact with this auxiliary component. To this end, in this lab,
+you will put aside your previous code and implement a simple application with
+the only purpose of registering in the name service and listing the addresses of
+the peers that are currently present in the network. This knowledge will help
+you to seamlessly incorporate the name service into your distributed database of
+fortunes in the future labs.
 
 \section{Name Service Interface} \slab{interface}
 The foremost aspect to note is that the name service is following the
@@ -96,8 +96,8 @@ sharing the same object type; otherwise, keep your object type secret.
 \section{Your Task} \slab{task}
 \subsection{Preparation}
 Continue working with the same code base that you have been working with so far,
-including all the changes that you have made. The files relevant to this
-assignment are listed below. You should read and understand them.
+including all the changes that you have made. The files relevant to this lab are
+listed below. You should read and understand them.
 \begin{itemize}
 
   \item \filename{lab2/peer.py} --- the \classname{Peer} application (\leave);
@@ -118,8 +118,8 @@ assignment are listed below. You should read and understand them.
 
 \end{itemize}
 Go through the code and grasp the main idea behind each part. You can also try
-to run the main executable file of the assignment, that is, \filename{peer.py},
-and you will observe that the application cannot even start without your help.
+to run the main executable file of the lab, that is, \filename{peer.py}, and you
+will observe that the application cannot even start without your help.
 
 \subsection{Understanding the Setup}
 Let us focus on the module \filename{orb.py} that contains an incomplete
@@ -196,11 +196,11 @@ The requirements are similar to those given in \aref{1}:
 
 \end{itemize}
 As you remember, each remote method invocation should be encoded in JSON and
-sent to the remote side, which is always the name service in this assignment. In
-this regard, pay your attention to the \code{\_rmi} function in
-\classname{Stub}. The name service returns the result of the call as a
-JSON-encoded object containing the output of the method, if it was successful,
-or an error, if the execution failed.
+sent to the remote side, which is always the name service in this lab. In this
+regard, pay your attention to the \code{\_rmi} function in \classname{Stub}. The
+name service returns the result of the call as a JSON-encoded object containing
+the output of the method, if it was successful, or an error, if the execution
+failed.
 
 Have a look at the arguments passed to \code{register} (see \sref{interface}). A
 common problem is that \code{socket.gethostname()} in \filename{peer.py} is
@@ -209,15 +209,15 @@ yields \code{127.0.0.1} or alike and the name service receives rather
 meaningless information about the peer. A workaround is to hardcode your IP
 address in \filename{peer.py}.
 
-After a successful completion of the assignment, each new peer started in a new
+After a successful completion of the lab, each new peer started in a new
 terminal window should output its own address and the addresses of all other
 peers that have already been started and have not been terminated. However,
-those other peers will not (and, in this assignment, are not supposed to) see
-the new one. Remember that you are provided with a test script
+those other peers will not (and, in this lab, are not supposed to) see the new
+one. Remember that you are provided with a test script
 (\filename{lab2/test.sh}), which can set up everything for you.
 
 \section{Conclusion}
-Having completed the assignment, you have made an important step towards your
+Having completed the lab, you have made an important step towards your
 distributed database of fortunes: now you have an object request broker that can
 properly interact with the name service (and, actually, with other peers).
 However, the simple listing of available peers achieved so far is not something
@@ -225,9 +225,9 @@ extremely useful by itself. Moreover, as it was discussed at the end of the
 previous section, each peer is aware only of those participants that joined the
 system before it. In addition, if a peer leaves the network, the other machines
 will not notice this change and, thus, can be misled. Therefore, in the next
-assignment, you will (a) extend the application constructed here to call some
-useful functions of other peers (not only of the name service) and (b) implement
-an auxiliary class that will help to properly maintain the list of active peers.
+lab, you will (a) extend the application constructed here to call some useful
+functions of other peers (not only of the name service) and (b) implement an
+auxiliary class that will help to properly maintain the list of active peers.
 
 \printbibliography
 

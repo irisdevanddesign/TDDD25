@@ -3,7 +3,7 @@
 
 \bibliography{include/references.bib}
 
-\title{Distributed Systems: Assignment 4\\Middleware: Distributed Locks}
+\title{Distributed Systems: Lab 4\\Middleware: Distributed Locks}
 \author{\input{include/authors.tex}}
 \date{December 20, 2015}
 
@@ -24,7 +24,7 @@ several peers might try to access shared resources simultaneously. Thus, such
 resources have to be protected in order to eliminate corrupted states of the
 data.
 
-The goal for this assignment is to implement an algorithm for distributed mutual
+The goal for this lab is to implement an algorithm for distributed mutual
 exclusion, which will address the aforementioned concern. This locking-enhanced
 configuration of the system is depicted in \fref{lock}. More specifically, we
 shall focus on the second Ricart--Agrawala algorithm \cite{lecture67} (the one
@@ -43,8 +43,8 @@ algorithm.
 \section{Your Task}
 \subsection{Preparation}
 Continue working with the same code base that you have been working with so far,
-including all the changes that you have made. The files relevant to this
-assignment are listed below. You should read and understand them.
+including all the changes that you have made. The files relevant to this lab are
+listed below. You should read and understand them.
 \begin{itemize}
 
   \item \filename{lab4/mutexPeer.py} --- the main application (\leave);
@@ -69,16 +69,16 @@ assignment are listed below. You should read and understand them.
   lock (\fix).
 
 \end{itemize}
-As usual, you should reuse your implementations from the previous assignments
-and overwrite the corresponding files listed above.
+As usual, you should reuse your implementations from the previous labs and
+overwrite the corresponding files listed above.
 
 Carefully go through the code in \filename{mutexPeer.py} and
 \filename{distributedLock.py}. The former is the main executable file of this
-assignment. It is a simple test application serving the only purpose of
-acquiring and releasing the distributed lock in \filename{distributedLock.py} by
-choosing the corresponding commands from the menu of the application (see
-below). Run several instances of \filename{mutexPeer.py} in parallel and try to
-acquire the lock in all of them simultaneously:
+lab. It is a simple test application serving the only purpose of acquiring and
+releasing the distributed lock in \filename{distributedLock.py} by choosing the
+corresponding commands from the menu of the application (see below). Run several
+instances of \filename{mutexPeer.py} in parallel and try to acquire the lock in
+all of them simultaneously:
 \begin{shell}
 \$ ./mutexPeer.py -t ivan
 Choose one of the following commands:
@@ -142,10 +142,10 @@ the token never disappears (\eg, due to a system crash) without passing the
 token to someone else.
 
 \section{Conclusion}
-In this assignment, you have implemented one of the algorithms for distributed
-mutual exclusion. As motivated in the introduction, such an algorithm is a
-crucial component of a distributed system as it makes it possible to maintain
-shared resources in consistent states. The final step is to integrate all the
+In this lab, you have implemented one of the algorithms for distributed mutual
+exclusion. As motivated in the introduction, such an algorithm is a crucial
+component of a distributed system as it makes it possible to maintain shared
+resources in consistent states. The final step is to integrate all the
 components that you have implemented so far into a robust distributed database,
 in which an arbitrary number of peers will be maintaining the content of the
 database, and an arbitrary number of clients/users will be able to seamlessly

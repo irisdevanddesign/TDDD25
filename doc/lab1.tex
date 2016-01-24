@@ -3,7 +3,7 @@
 
 \bibliography{include/references.bib}
 
-\title{Distributed Systems: Assignment 1\\Client-Server Database}
+\title{Distributed Systems: Lab 1\\Client-Server Database}
 \author{\input{include/authors.tex}}
 \date{December 20, 2015}
 
@@ -12,16 +12,15 @@
 
 \section{Introduction}
 \input{include/assets/single-server.tex}
-In the previous assignment, you built a non-distributed system composed of a
-number of standalone machines, and each such machine was responsible for both
-the server and client components of your fortune database. You observed that the
-private copies of the data maintained by the machines could easily become
-inconsistent as there were no attempts of synchronization. The goal of the
-current assignment is to mitigate this problem by utilizing the client-server
-model \cite{lecture2} of distributed systems. Specifically, we shall designate
-the server role to one separate machine and turn the rest into pure clients.
-This scenario is depicted in \fref{single-server}; compare it with the one from
-\aref{0}.
+In the previous lab, you built a non-distributed system composed of a number of
+standalone machines, and each such machine was responsible for both the server
+and client components of your fortune database. You observed that the private
+copies of the data maintained by the machines could easily become inconsistent
+as there were no attempts of synchronization. The goal of the current lab is to
+mitigate this problem by utilizing the client-server model \cite{lecture2} of
+distributed systems. Specifically, we shall designate the server role to one
+separate machine and turn the rest into pure clients. This scenario is depicted
+in \fref{single-server}; compare it with the one from \aref{0}.
 
 \section{Communication Protocol} \slab{protocol}
 In order for the server and clients to be able to interact with each other, they
@@ -90,8 +89,8 @@ constructor of the class.
 \section{Your Task}
 \subsection{Preparation}
 Continue working with the same code base that you have been working with so far,
-including all the changes that you have made. The files relevant to this
-assignment are listed below. You should read and understand them.
+including all the changes that you have made. The files relevant to this lab are
+listed below. You should read and understand them.
 \begin{itemize}
 
   \item \filename{lab1/client.py} --- the \classname{Client} application (\fix);
@@ -118,7 +117,7 @@ attention to the missing parts marked with ``Your code here.'' In order to run
 the code, open two terminal windows and change the current folder to
 \filename{lab1}. In one of the terminals, issue the following command in order
 to run the \classname{Server} application (recall that the server is unique in
-this assignment):
+this lab):
 \begin{shell}
 \$ ./server.py
 Listening to: c-204-13.eduroam.liu.se:45725
@@ -151,14 +150,14 @@ correctness of the address, the system does not work at this stage since neither
 \classname{Server} nor \classname{Client} has the corresponding communication
 part implemented.
 
-In order to ease the testing procedure of this and the future assignments, we
-have implemented a set of shell scripts that open the needed terminals and run
-the corresponding commands for you. These scripts are called \filename{test.sh}
-and can be found in the main folder of each assignment. For instance, the test
-script for the current assignment is \filename{lab1/test.sh}. It is important to
-note, however, that you should be able to set up everything yourself without the
-help of these scripts. So, have a look at the content of the scripts and make
-sure you understand what they do. You can also modify these scripts as you wish.
+In order to ease the testing procedure of this and the future labs, we have
+implemented a set of shell scripts that open the needed terminals and run the
+corresponding commands for you. These scripts are called \filename{test.sh} and
+can be found in the main folder of each lab. For instance, the test script for
+the current lab is \filename{lab1/test.sh}. It is important to note, however,
+that you should be able to set up everything yourself without the help of these
+scripts. So, have a look at the content of the scripts and make sure you
+understand what they do. You can also modify these scripts as you wish.
 
 \subsection{Communication} \slab{communication}
 Using \python's sockets \cite{python-ipc}, complete the implementation of
@@ -196,18 +195,17 @@ Lastly, make sure that, in spite of all possibly occurred exceptions, the server
 keeps on working until it is explicitly stopped by the user.
 
 \section{Conclusion}
-In this assignment, you have implemented a rather na\"{i}ve distributed system:
-there is only one server and each client is required to know the current address
-of the server. The former issue makes our distributed system both unreliable
-(\eg, your carefully written code will not protect the server against a
-blackout) and inefficient (\eg, if there are many clients, the workload of a
-single server machine can be substantially high making clients wait for a
-response for a long time). The second issue makes it inconvenient for the
-clients to connect to the server as the hostname and/or port of the server might
-easily change, and the clients need to keep track of such changes. This
-inconvenience will become especially bothering when you allow your distributed
-system to have several servers; therefore, in the next assignment, you will
-address this problem first.
+In this lab, you have implemented a rather na\"{i}ve distributed system: there
+is only one server and each client is required to know the current address of
+the server. The former issue makes our distributed system both unreliable (\eg,
+your carefully written code will not protect the server against a blackout) and
+inefficient (\eg, if there are many clients, the workload of a single server
+machine can be substantially high making clients wait for a response for a long
+time). The second issue makes it inconvenient for the clients to connect to the
+server as the hostname and/or port of the server might easily change, and the
+clients need to keep track of such changes. This inconvenience will become
+especially bothering when you allow your distributed system to have several
+servers; therefore, in the next lab, you will address this problem first.
 
 \printbibliography
 

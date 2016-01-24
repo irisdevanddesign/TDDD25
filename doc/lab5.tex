@@ -3,7 +3,7 @@
 
 \bibliography{include/references.bib}
 
-\title{Distributed Systems: Assignment 5\\Client-Server Database with Replicas}
+\title{Distributed Systems: Lab 5\\Client-Server Database with Replicas}
 \author{\input{include/authors.tex}}
 \date{December 20, 2015}
 
@@ -12,9 +12,9 @@
 
 \section{Introduction}
 \input{include/assets/distributed-database.tex}
-Let us summarize what has been achieved so far. In the first two assignments,
-counting from zero, you implemented the basic functionality of a database
-following the client-server model. Specifically,
+Let us summarize what has been achieved so far. In the first two labs, counting
+from zero, you implemented the basic functionality of a database following the
+client-server model. Specifically,
 \begin{itemize}
 
   \item the user can perform the read and write operations on the data, that is,
@@ -25,8 +25,8 @@ following the client-server model. Specifically,
   two possible commands (\aref{1}).
 
 \end{itemize}
-In the last three assignments, from two to four, you built the core components
-of a distributed system. These components are as follows:
+In the last three labs, from two to four, you built the core components of a
+distributed system. These components are as follows:
 \begin{itemize}
 
   \item an object request broker, which, together with the name service,
@@ -39,9 +39,9 @@ of a distributed system. These components are as follows:
   corrupted states due to concurrent operations (\aref{4}).
 
 \end{itemize}
-The goal of this assignment is to improve the na\"{i}ve database obtained at the
-end of \aref{1} by fusing it with the three components of a distributed system
-listed above. The target configuration of the system is displayed in
+The goal of this lab is to improve the na\"{i}ve database obtained at the end of
+\aref{1} by fusing it with the three components of a distributed system listed
+above. The target configuration of the system is displayed in
 \fref{distributed-database}, in which each peer\footnote{The words \emph{peer}
 and \emph{server} are used interchangeably in our context. Similarly, the words
 \emph{user} and \emph{client} have the same meaning here.} maintains a copy of
@@ -54,17 +54,17 @@ guaranteed to see the same data regardless of the peer chosen for reading.
 
 In the scenario described above, the peers duplicating the data are typically
 referred to as replica managers. This concept is of high importance for the
-current assignment, and, therefore, it might be a good idea to get yourself
-familiar with it before diving deeper into the assignment. All the needed
-information on the subject can be found in the corresponding lecture notes
-\cite{lecture8}. In particular, make sure you understand the read-any/write-all
-protocol, which our replica managers will be assumed to follow.
+current lab, and, therefore, it might be a good idea to get yourself familiar
+with it before diving deeper into the lab. All the needed information on the
+subject can be found in the corresponding lecture notes \cite{lecture8}. In
+particular, make sure you understand the read-any/write-all protocol, which our
+replica managers will be assumed to follow.
 
 \section{Your Task}
 \subsection{Preparation} \slab{preparation}
 Continue working with the same code base that you have been working with so far,
-including all the changes that you have made. The files relevant to this
-assignment are listed below. You should read and understand them.
+including all the changes that you have made. The files relevant to this lab are
+listed below. You should read and understand them.
 \begin{itemize}
 
   \item \filename{lab5/client.py} --- the client application representing a user
@@ -133,8 +133,8 @@ copy of the data and collaborates with other servers in order to keep this copy
 up-to-date. An instance of \filename{client.py} is a client/user of the
 distributed database that connects to one of the peers and can issue the
 read/write operations via the corresponding text menu (similar to the first two
-assignments). A client chooses a server to connect to by virtue of the name
-service, which you can easily tell by looking at the corresponding code. More
+labs). A client chooses a server to connect to by virtue of the name service,
+which you can easily tell by looking at the corresponding code. More
 specifically, in \filename{client.py}, you can discover two new functions that
 the interface of the name service has:
 \begin{itemize}
@@ -165,10 +165,10 @@ properly resolved, and your \classname{DistributedLock} is in high demand in
 this context.
 
 \subsection{Implementation} \slab{implementation}
-As you can see in the source code of this assignment, the system has already
-been assembled for you. Assuming that you have properly transfered your
-(hopefully correct) implementations from the previous assignment to the current
-one (see \sref{preparation}), there is only one problem to solve.
+As you can see in the source code of this lab, the system has already been
+assembled for you. Assuming that you have properly transfered your (hopefully
+correct) implementations from the previous lab to the current one (see
+\sref{preparation}), there is only one problem to solve.
 
 Neither \classname{ReadWriteLock} nor \classname{DistributedLock} is sufficient
 by itself. The former is not aware of the distributed nature of the system, and
@@ -185,12 +185,12 @@ have to write two functions with rather suggestive names: \texttt{read} and
 \texttt{write}.
 
 \section{Conclusion}
-Congratulations! You have successfully completed the final programming
-assignment of the course. In this assignment, you have put together many of the
-ideas that you learned previously and have created a robust distributed
-database, which is able to serve many clients in parallel balancing the workload
-among several servers spread out across the network. We hope that you enjoyed
-this programming project. Good luck!
+Congratulations! You have successfully completed the final lab of the course. In
+this lab, you have put together many of the ideas that you learned previously
+and have created a robust distributed database, which is able to serve many
+clients in parallel balancing the workload among several servers spread out
+across the network. We hope that you enjoyed this programming project. Good
+luck!
 
 \printbibliography
 

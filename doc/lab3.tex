@@ -3,7 +3,7 @@
 
 \bibliography{include/references.bib}
 
-\title{Distributed Systems: Assignment 3\\Middleware: Peer-to-Peer
+\title{Distributed Systems: Lab 3\\Middleware: Peer-to-Peer
 Communications}
 \author{\input{include/authors.tex}}
 \date{December 20, 2015}
@@ -13,14 +13,14 @@ Communications}
 
 \section{Introduction}
 \input{include/assets/chat.tex}
-The goal of the current assignment is to make the code written for \aref{2}
-properly handle situations when peers arbitrary join and leave your distributed
-system. This functionality will be delegated to a separate class called
+The goal of the current lab is to make the code written for \aref{2} properly
+handle situations when peers arbitrary join and leave your distributed system.
+This functionality will be delegated to a separate class called
 \classname{PeerList}, which will take advantage of the object request broker
-implemented as a part of the previous assignment. In addition, you will
-introduce interactions between peers themselves, \ie, peers will be remotely
-invoking methods \cite{lecture3} of each other (as you remember, so far peers
-were communicating only with the name service). In order to put all these pieces
+implemented as a part of the previous lab. In addition, you will introduce
+interactions between peers themselves, \ie, peers will be remotely invoking
+methods \cite{lecture3} of each other (as you remember, so far peers were
+communicating only with the name service). In order to put all these pieces
 together and ensure that they work properly, you will implement a test
 application for exchanging text messages between peers. Such a system of
 messengers is depicted in \fref{chat}.
@@ -28,8 +28,8 @@ messengers is depicted in \fref{chat}.
 \section{Your Task}
 \subsection{Preparation}
 Continue working with the same code base that you have been working with so far,
-including all the changes that you have made. The files relevant to this
-assignment are listed below. You should read and understand them.
+including all the changes that you have made. The files relevant to this lab are
+listed below. You should read and understand them.
 \begin{itemize}
 
   \item \filename{lab3/chatPeer.py} --- the chat application (\leave);
@@ -52,19 +52,19 @@ assignment are listed below. You should read and understand them.
 
 \end{itemize}
 
-The main functionality of this assignment is concentrated in
-\filename{peerList.py}, which contains the \classname{PeerList} class. As the
-name suggests, this class represents a list of peers, and it is utilized as
-follows. Each peer has an instance of \classname{PeerList}, and this instance
-maintains local images, that is, \classname{Stub}s, of all the peers that are
-currently present in the network (restricted to your name space specified by
-your object type\footnote{Object types were discussed in \aref{2}.}). Therefore,
-whenever a peer wants to invoke a method of some other peer, it just needs to
-find the addressee in the peer list and make a call to the corresponding image;
-the rest will be done automatically by the object-request-broker functionality
-that you implemented earlier. Carefully read the code in \filename{peerList.py}
-and understand what it does. In particular, ensure that you understand the
-purpose of the locks utilized throughout the module.
+The main functionality of this lab is concentrated in \filename{peerList.py},
+which contains the \classname{PeerList} class. As the name suggests, this class
+represents a list of peers, and it is utilized as follows. Each peer has an
+instance of \classname{PeerList}, and this instance maintains local images, that
+is, \classname{Stub}s, of all the peers that are currently present in the
+network (restricted to your name space specified by your object
+type\footnote{Object types were discussed in \aref{2}.}). Therefore, whenever a
+peer wants to invoke a method of some other peer, it just needs to find the
+addressee in the peer list and make a call to the corresponding image; the rest
+will be done automatically by the object-request-broker functionality that you
+implemented earlier. Carefully read the code in \filename{peerList.py} and
+understand what it does. In particular, ensure that you understand the purpose
+of the locks utilized throughout the module.
 
 Run \filename{chatPeer.py} in several terminal windows. If you have overwritten
 \filename{orb.py} with your correct implementation from \aref{2}, the
@@ -121,8 +121,8 @@ At this point, you have a rather solid ground for your future distributed
 database of fortunes. Now you can perform remote method invocations in a
 straightforward manner, thanks to your object request broker and peer list.
 However, we shall postpone the integration of this code with the
-database-related code from \aref{1} until the final assignment. The reason is
-that there is one crucial component which is still missing. This component is a
+database-related code from \aref{1} until the final lab. The reason is that
+there is one crucial component which is still missing. This component is a
 distributed lock \cite{lecture67}, which you will closely look at in \aref{4}.
 
 \printbibliography
