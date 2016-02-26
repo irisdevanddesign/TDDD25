@@ -122,7 +122,7 @@ class Server(orb.Peer):
 
         Obtain the distributed lock and call all other servers to write
         the fortune as well. Call their 'write_local' as they cannot
-        atempt to obtain the distributed lock when writting their
+        attempt to obtain the distributed lock when writing their
         copies.
 
         """
