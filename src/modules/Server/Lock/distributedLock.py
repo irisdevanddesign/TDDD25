@@ -9,18 +9,18 @@
 
 """Module for the distributed mutual exclusion implementation.
 
-This implementation is based on the second Rikard-Agravara algorithm.
+This implementation is based on the second Ricart-Agrawala algorithm.
 The implementation should satisfy the following requests:
     --  when starting, the peer with the smallest id in the peer list
         should get the token.
-    --  access to the state of each peer (dictinaries: request, token,
+    --  access to the state of each peer (dictionaries: request, token,
         and peer_list) should be protected.
-    --  the implementation should gratiously handle situations when a
-        peer dies unexpectedly. All exceptions comming from calling
+    --  the implementation should graciously handle situations when a
+        peer dies unexpectedly. All exceptions coming from calling
         peers that have died, should be handled such as the rest of the
         peers in the system are still working. Whenever a peer has been
         detected as dead, the token, request, and peer_list
-        dictionaries should be updated acordingly.
+        dictionaries should be updated accordingly.
     --  when the peer that has the token (either TOKEN_PRESENT or
         TOKEN_HELD) quits, it should pass the token to some other peer.
     --  For simplicity, we shall not handle the case when the peer
