@@ -67,9 +67,6 @@ class DatabaseProxy(object):
     # Public methods
 
     def read(self):
-        #
-        # Your code here.
-        #
         pass
 
     def write(self, fortune):

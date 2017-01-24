@@ -64,16 +64,11 @@ class Server(object):
     # Public methods
 
     def read(self):
-        #
-        # Your code here.
-        #
-        pass
+        return self.db.read()
 
     def write(self, fortune):
-        #
-        # Your code here.
-        #
-        pass
+        return self.db.write(fortune)
+
 
 
 class Request(threading.Thread):
@@ -114,9 +109,11 @@ class Request(threading.Thread):
                         }
                     }
         """
-        #
-        # Your code here.
-        #
+        #data = json.loads(request)
+
+        """if "method" in data:
+            self.db_server.data.method"""
+
         pass
 
     def run(self):
