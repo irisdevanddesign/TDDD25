@@ -66,7 +66,7 @@ class Server(object):
     def read(self):
         #
         # Your code here.
-        #
+        # My code here?
         pass
 
     def write(self, fortune):
