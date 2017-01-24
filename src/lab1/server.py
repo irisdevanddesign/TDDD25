@@ -65,7 +65,6 @@ class Server(object):
 
     def read(self):
         return self.db.read()
-
     def write(self, fortune):
         return self.db.write(fortune)
 
