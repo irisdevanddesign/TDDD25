@@ -54,7 +54,15 @@ server_address = opts.address[0]
 
 
 class ComunicationError(Exception):
-    pass
+
+    """ Class for throwing CommunicationErrors related to protol or unknown errors."""
+
+    def __init__(self, type, args):
+        self.type = type
+        self.args = args
+
+    def __str__(self):
+        return self.type
 
 
 class DatabaseProxy(object):
@@ -65,15 +73,42 @@ class DatabaseProxy(object):
         self.address = server_address
 
     # Public methods
+    def sendToServer(self, message):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect(self.address)
+
+        self.socket.send(message.encode())
+
+
+    def receiveFromServer(self):
+        result = self.socket.recv(2048)
+        self.socket.close()
+
+        return result
 
     def read(self):
-        pass
+        message = json.dumps({"method": "read", "args": []})
+        self.sendToServer(message)
+        receive = self.receiveFromServer()
+        try:
+            response = json.loads(receive)
+            if "result" in response:
+                return response["result"]
+            elif "error" in response:
+                exception = type(response["error"]["name"], (Exception), {})
+                raise exception(response["error"]["args"])
+            else:
+                raise ComunicationError("ProtocolError", ["Protocol not followed"])
+        except ComunicationError as e:
+            print(e)
+
+        # will never be reached
+        return ""
 
     def write(self, fortune):
-        #
-        # Your code here.
-        #
-        pass
+
+
+        return
 
 # -----------------------------------------------------------------------------
 # The main program

@@ -64,9 +64,30 @@ class Server(object):
     # Public methods
 
     def read(self):
-        return self.db.read()
+        """ Reading the database and utilizing the read-lock
+        :return errorCode """
+
+        self.rwlock.read_acquire()
+
+        try:
+            errorCode = self.db.read()
+        finally:
+            self.rwlock.read_release()
+
+        return errorCode
+
     def write(self, fortune):
-        return self.db.write(fortune)
+        """ Writing to the database and utilizing the write-lock
+        :return errorCode """
+
+        self.rwlock.write_acquire()
+
+        try:
+            errorCode = self.db.write(fortune)
+        finally:
+            self.rwlock.write_release()
+
+        return errorCode
 
 
 
@@ -108,12 +129,17 @@ class Request(threading.Thread):
                         }
                     }
         """
-        #data = json.loads(request)
+        message = json.loads(request)
 
-        """if "method" in data:
-            self.db_server.data.method"""
+        try:
+            method = getattr(self.db_server, message["method"])
+            arguments = message["args"]
+            result = json.dumps({"result": method(arguments)})
 
-        pass
+        except Exception as e:
+            result = json.dumps({"error": {"name": type(e).__name__, "args": e.args}})
+
+        return result
 
     def run(self):
         try:
