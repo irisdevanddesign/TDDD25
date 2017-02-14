@@ -14,6 +14,7 @@
 import sys
 import socket
 import json
+import select
 import argparse
 
 # -----------------------------------------------------------------------------
@@ -73,29 +74,30 @@ class DatabaseProxy(object):
         self.address = server_address
 
     # Public methods
-    def sendToServer(self, message):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(self.address)
+    def send_to_server(self, message):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect(self.address)
 
-        self.socket.send(message.encode())
+        sent = self.sock.send(message)
 
+    def receive_from_server(self):
+        result = self.sock.recv(2048)
 
-    def receiveFromServer(self):
-        result = self.socket.recv(2048)
-        self.socket.close()
+        self.sock.close()
 
-        return result
+        return result.decode()
 
     def read(self):
         message = json.dumps({"method": "read", "args": []})
-        self.sendToServer(message)
-        receive = self.receiveFromServer()
+        message += '\n'
+        self.send_to_server(message.encode())
+        receive = self.receive_from_server()
         try:
             response = json.loads(receive)
             if "result" in response:
                 return response["result"]
             elif "error" in response:
-                exception = type(response["error"]["name"], (Exception), {})
+                exception = type(response["error"]["name"], (Exception, ), {})
                 raise exception(response["error"]["args"])
             else:
                 raise ComunicationError("ProtocolError", ["Protocol not followed"])
@@ -103,10 +105,23 @@ class DatabaseProxy(object):
             print(e)
 
         # will never be reached
-        return ""
 
     def write(self, fortune):
-
+        message = json.dumps({"method": "write", "args": [fortune]})
+        message += '\n'
+        self.send_to_server(message.encode())
+        receive = self.receive_from_server()
+        try:
+            response = json.loads(receive)
+            if "result" in response:
+                return response["result"]
+            elif "error" in response:
+                exception = type(response["error"]["name"], (Exception, ), {})
+                raise exception(response["error"]["args"])
+            else:
+                raise ComunicationError("ProtocolError", ["Protocol not followed"])
+        except ComunicationError as e:
+            print(e)
 
         return
 

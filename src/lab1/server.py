@@ -65,30 +65,29 @@ class Server(object):
 
     def read(self):
         """ Reading the database and utilizing the read-lock
-        :return errorCode """
+        :return result (read fortune from the database) """
 
         self.rwlock.read_acquire()
 
         try:
-            errorCode = self.db.read()
+            result = self.db.read()
         finally:
             self.rwlock.read_release()
 
-        return errorCode
+        return result
 
     def write(self, fortune):
         """ Writing to the database and utilizing the write-lock
-        :return errorCode """
+        :return result) """
 
         self.rwlock.write_acquire()
 
         try:
-            errorCode = self.db.write(fortune)
+            self.db.write(fortune[0])
         finally:
             self.rwlock.write_release()
 
-        return errorCode
-
+        return
 
 
 class Request(threading.Thread):
@@ -134,7 +133,10 @@ class Request(threading.Thread):
         try:
             method = getattr(self.db_server, message["method"])
             arguments = message["args"]
-            result = json.dumps({"result": method(arguments)})
+            if arguments:
+                result = json.dumps({"result": method(arguments)})
+            else:
+                result = json.dumps({"result": method()})
 
         except Exception as e:
             result = json.dumps({"error": {"name": type(e).__name__, "args": e.args}})
@@ -149,6 +151,7 @@ class Request(threading.Thread):
             request = worker.readline()
             # Process the request.
             result = self.process_request(request)
+
             # Send the result.
             worker.write(result + '\n')
             worker.flush()

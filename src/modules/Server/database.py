@@ -23,10 +23,9 @@ class Database(object):
 
         file = open(self.db_file)
         self.data = file.read().split('%')
-        return self
 
     def read(self):
-        """Read a random location in the database."""
+        """Read a random fortune in the database."""
 
         randomFortune = self.rand.randint(0, len(self.data))
         return self.data[randomFortune]
