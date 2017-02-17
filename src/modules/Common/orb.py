@@ -12,7 +12,6 @@ import socket
 import json
 
 """Object Request Broker
-
 This module implements the infrastructure needed to transparently create
 objects that communicate via networks. This infrastructure consists of:
 
@@ -26,12 +25,56 @@ objects that communicate via networks. This infrastructure consists of:
         Class that implements basic bidirectional (Stub/Skeleton)
         communication. Any object wishing to transparently interact with
         remote objects should extend this class.
-
 """
 
 
-class ComunicationError(Exception):
-    pass
+def create_request(method, args):
+    if args:
+        return json.dumps({"method": method, "args": []})
+    else:
+        return json.dumps({"method": method, "args": [args]})
+
+
+def read_response(response):
+        try:
+            result = json.loads(response)
+            if "result" in result:
+                return result["result"]
+            elif "error" in result:
+                exception = type(result["error"]["name"], (Exception, ), {})
+                raise exception(result["error"]["args"])
+            else:
+                raise CommunicationError("ProtocolError", ["Protocol not followed"])
+        except CommunicationError as e:
+            print(e)
+
+
+def process_request(owner, request):
+    message = json.loads(request)
+
+    try:
+        method = getattr(owner, message["method"])
+        arguments = message["args"]
+        if arguments:
+            result = json.dumps({"result": method(arguments)})
+        else:
+            result = json.dumps({"result": method()})
+
+    except Exception as e:
+        result = json.dumps({"error": {"name": type(e).__name__, "args": e.args}})
+
+    return result
+
+
+class CommunicationError(Exception):
+    """ Class for throwing CommunicationErrors related to protocol or unknown errors."""
+
+    def __init__(self, type, args):
+        self.type = type
+        self.args = args
+
+    def __str__(self):
+        return self.type
 
 
 class Stub(object):
@@ -46,10 +89,16 @@ class Stub(object):
         self.address = tuple(address)
 
     def _rmi(self, method, *args):
-        #
-        # Your code here.
-        #
-        pass
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect(self.address)
+
+        request = ''.join((json.dumps({'method': method, 'args': args}), '\n'))
+
+        worker = self.sock.makefile(mode="rw")
+        worker.write(request)
+        worker.flush()
+
+        return read_response(worker.readline())
 
     def __getattr__(self, attr):
         """Forward call to name over the network at the given address."""
@@ -70,11 +119,11 @@ class Request(threading.Thread):
         self.daemon = True
 
     def run(self):
-        #
-        # Your code here.
-        #
-        pass
-
+        worker = self.conn.makefile(mode="rw")
+        request = worker.readline()
+        result = process_request(self.owner, request)
+        worker.write(result + '\n')
+        worker.flush()
 
 class Skeleton(threading.Thread):
 
@@ -90,16 +139,21 @@ class Skeleton(threading.Thread):
         self.address = address
         self.owner = owner
         self.daemon = True
-        #
-        # Your code here.
-        #
-        pass
+
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.bind(self.address)
+        self.server_socket.listen(1)
 
     def run(self):
-        #
-        # Your code here.
-        #
-        pass
+        while True:
+            try:
+                conn, addr = self.server_socket.accept()
+                request = Request(self.owner, conn, addr)
+                print("Serving request from " + addr)
+                request.start()
+            except socket.error:
+                print("error")
+                continue
 
 
 class Peer:
@@ -129,7 +183,7 @@ class Peer:
         if addr_name != "":
             addrs = socket.gethostbyname_ex(addr_name)[2]
             if len(addrs) == 0:
-                raise ComunicationError("Invalid address to listen to")
+                raise CommunicationError("Invalid address to listen to")
             elif len(addrs) == 1:
                 addr_name = addrs[0]
             else:

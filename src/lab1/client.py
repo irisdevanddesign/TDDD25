@@ -77,14 +77,11 @@ class DatabaseProxy(object):
     def send_to_server(self, message):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(self.address)
-
-        sent = self.sock.send(message)
+        self.sock.send(message)
 
     def receive_from_server(self):
         result = self.sock.recv(2048)
-
         self.sock.close()
-
         return result.decode()
 
     def read(self):

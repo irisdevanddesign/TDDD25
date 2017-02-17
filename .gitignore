@@ -1,3 +1,4 @@
 *.xml
 *.tmp
 *.idea
+.idea/workspace.xml
