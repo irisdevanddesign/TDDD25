@@ -36,10 +36,17 @@ class PeerList(object):
 
         self.lock.acquire()
         try:
-            #
-            # Your code here.
-            #
-            pass
+            peers_to_register_at = self.owner.name_service.require_all(self.owner.type)
+            for peer_id, peer_address in peers_to_register_at:
+                if peer_id <= self.owner.id:
+                    continue
+                self.register_peer(peer_id, peer_address)
+
+            registered_peers = self.get_peers()
+            for peer_id, peer_address in registered_peers.items():
+                peer = self.peer(peer_id)
+                peer.register_peer(self.owner.id, self.owner.address)
+
         finally:
             self.lock.release()
 
@@ -48,10 +55,12 @@ class PeerList(object):
 
         self.lock.acquire()
         try:
-            #
-            # Your code here.
-            #
-            pass
+            registered_peers = self.get_peers()
+            if registered_peers:
+                for peer_id, peer_address in registered_peers.items():
+                    peer = self.peer(peer_id)
+                    peer.unregister_peer(self.owner.id)
+                    #except
         finally:
             self.lock.release()
 

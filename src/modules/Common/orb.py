@@ -9,9 +9,10 @@
 
 import threading
 import socket
+import time
 import json
-
 """Object Request Broker
+
 This module implements the infrastructure needed to transparently create
 objects that communicate via networks. This infrastructure consists of:
 
@@ -29,7 +30,7 @@ objects that communicate via networks. This infrastructure consists of:
 
 
 def create_request(method, args):
-    if args:
+    if not args:
         return json.dumps({"method": method, "args": []})
     else:
         return json.dumps({"method": method, "args": [args]})
@@ -54,16 +55,11 @@ def process_request(owner, request):
 
     try:
         method = getattr(owner, message["method"])
-        arguments = message["args"]
-        if arguments:
-            result = json.dumps({"result": method(arguments)})
-        else:
-            result = json.dumps({"result": method()})
+        result = method(*message["args"])
+        return ''.join((json.dumps({'result': result}), '\n'))
 
-    except Exception as e:
-        result = json.dumps({"error": {"name": type(e).__name__, "args": e.args}})
-
-    return result
+    except AttributeError as e:
+        return ''.join(result, '\n')
 
 
 class CommunicationError(Exception):
@@ -89,16 +85,18 @@ class Stub(object):
         self.address = tuple(address)
 
     def _rmi(self, method, *args):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect(self.address)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(self.address)
 
         request = ''.join((json.dumps({'method': method, 'args': args}), '\n'))
 
-        worker = self.sock.makefile(mode="rw")
+        worker = sock.makefile(mode="rw")
         worker.write(request)
         worker.flush()
-
-        return read_response(worker.readline())
+        time.sleep(1)
+        response = worker.readline()
+        sock.close()
+        return read_response(response)
 
     def __getattr__(self, attr):
         """Forward call to name over the network at the given address."""
@@ -122,8 +120,9 @@ class Request(threading.Thread):
         worker = self.conn.makefile(mode="rw")
         request = worker.readline()
         result = process_request(self.owner, request)
-        worker.write(result + '\n')
+        worker.write(result)
         worker.flush()
+
 
 class Skeleton(threading.Thread):
 
@@ -149,10 +148,9 @@ class Skeleton(threading.Thread):
             try:
                 conn, addr = self.server_socket.accept()
                 request = Request(self.owner, conn, addr)
-                print("Serving request from " + addr)
+                print("Serving request from {0}".format(addr))
                 request.start()
             except socket.error:
-                print("error")
                 continue
 
 

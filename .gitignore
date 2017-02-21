@@ -2,3 +2,6 @@
 *.tmp
 *.idea
 .idea/workspace.xml
+*.pyc
+.idea/*
+*.iml
