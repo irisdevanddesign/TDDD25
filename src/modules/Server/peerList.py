@@ -38,7 +38,7 @@ class PeerList(object):
         try:
             peers_to_register_at = self.owner.name_service.require_all(self.owner.type)
             for peer_id, peer_address in peers_to_register_at:
-                if peer_id <= self.owner.id:
+                if peer_id >= self.owner.id:
                     continue
                 self.register_peer(peer_id, peer_address)
 
@@ -60,7 +60,6 @@ class PeerList(object):
                 for peer_id, peer_address in registered_peers.items():
                     peer = self.peer(peer_id)
                     peer.unregister_peer(self.owner.id)
-                    #except
         finally:
             self.lock.release()
 

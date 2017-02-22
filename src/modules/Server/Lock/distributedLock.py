@@ -86,67 +86,126 @@ class DistributedLock(object):
         function is called.
 
         """
-        #
-        # Your code here.
-        #
-        pass
+
+        self.peer_list.lock.acquire()
+        try:
+            if len(self.peer_list.peers) == 0:
+                print("I GOT THE TOKEN")
+                self.state = TOKEN_PRESENT
+                self.display_status()
+                self.token = {self.owner.id: 0}
+            else:
+                for peer_id in self.peer_list.get_peers():
+                    self.request[peer_id] = 0
+        finally:
+            self.peer_list.lock.release()
 
     def destroy(self):
         """ The object is being destroyed.
 
         If we have the token (TOKEN_PRESENT or TOKEN_HELD), we must
-        give it to someone else.
-
+        give it to someone else."""
         """
-        #
-        # Your code here.
-        #
+        self.peer_list.lock.acquire()
+        try:
+            if self.state == TOKEN_PRESENT or self.state == TOKEN_HELD:
+                peer_id = self.peer_list.get_peers()[0]
+                peer = self.peer_list.peer(peer_id)
+                peer.obtain_token(self._prepare(self.token))
+        finally:
+            self.peer_list.lock.release()"""
         pass
 
     def register_peer(self, pid):
         """Called when a new peer joins the system."""
-        #
-        # Your code here.
-        #
-        pass
+
+        self.peer_list.lock.acquire()
+        try:
+            self.request[pid] = 0
+            if self.state == TOKEN_HELD or self.state == TOKEN_PRESENT:
+                self.token[pid] = 0
+        finally:
+            self.peer_list.lock.release()
 
     def unregister_peer(self, pid):
         """Called when a peer leaves the system."""
-        #
-        # Your code here.
-        #
-        pass
+
+        self.peer_list.lock.acquire()
+        try:
+            del self.request[pid]
+            if self.state == TOKEN_PRESENT or self.state == TOKEN_HELD:
+                del self.token[pid]
+        finally:
+            self.peer_list.lock.release()
 
     def acquire(self):
         """Called when this object tries to acquire the lock."""
+
         print("Trying to acquire the lock...")
-        #
-        # Your code here.
-        #
-        pass
+
+        if self.state == NO_TOKEN:
+            self.peer_list.lock.acquire()
+
+            try:
+                for peer_id in self.peer_list.get_peers():
+                    peer = self.peer_list.peer(peer_id)
+                    print(peer_id)
+                    peer.request_token(self.time, self.owner.id)
+            finally:
+                self.peer_list.lock.release()
+
+            while self.state == NO_TOKEN:
+                pass
+        else:
+            self.token[self.owner.id] = self.time
+        self.state = TOKEN_HELD
 
     def release(self):
         """Called when this object releases the lock."""
         print("Releasing the lock...")
-        #
-        # Your code here.
-        #
-        pass
+
+        self.peer_list.lock.acquire()
+        try:
+            self.state = TOKEN_PRESENT
+            for peer_id in self.peer_list.get_peers():
+                if self.request[peer_id] > self.token[peer_id]:
+                    peer = self.peer_list.peer(peer_id)
+                    peer.obtain_token(self._prepare(self.token))
+                    self.state = NO_TOKEN
+                    break
+        finally:
+            self.peer_list.lock.release()
 
     def request_token(self, time, pid):
         """Called when some other object requests the token from us."""
-        #
-        # Your code here.
-        #
-        pass
+        self.peer_list.lock.acquire()
+        try:
+            if self.request[pid] <= time:
+                self.request[pid] = time
+            if self.state == TOKEN_PRESENT:
+                if self.request[pid] >= self.token[pid]:
+                    peer = self.peer_list.peer(pid)
+                    peer.obtain_token(self._prepare(self.token))
+                    print("3")
+                    self.state = NO_TOKEN
+                    print("4")
+        finally:
+            self.peer_list.lock.release()
+            print("nignog")
 
     def obtain_token(self, token):
         """Called when some other object is giving us the token."""
+
         print("Receiving the token...")
-        #
-        # Your code here.
-        #
-        pass
+        self.peer_list.lock.acquire()
+        print("lock opened")
+        try:
+            self.token = self._unprepare(token)
+            ++self.time
+            self.token[self.owner.id] = self.time
+            self.state = TOKEN_PRESENT
+        finally:
+            self.peer_list.lock.release()
 
     def display_status(self):
         """Print the status of this peer."""

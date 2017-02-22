@@ -93,7 +93,6 @@ class Stub(object):
         worker = sock.makefile(mode="rw")
         worker.write(request)
         worker.flush()
-        time.sleep(1)
         response = worker.readline()
         sock.close()
         return read_response(response)

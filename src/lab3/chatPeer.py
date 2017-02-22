@@ -135,7 +135,7 @@ while command != "q":
         if e.__class__.__name__ == KeyboardInterrupt:
             break
         else:
-            print("Error: " + e.__class__.__name__  + ". Please write message in english.")
+            print("Error: " + e.__class__.__name__ + ". Please write message in english.")
 
 # Kill our peer object.
 p.destroy()
