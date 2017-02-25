@@ -35,6 +35,7 @@ class ReadWriteLock(object):
     # Public methods
 
     def read_acquire(self):
+        print("locking")
         self.reader_lock.acquire()
         if self.reader_count == 0:
             self.writer_lock.acquire()
@@ -47,6 +48,7 @@ class ReadWriteLock(object):
         if self.reader_count == 0:
             self.writer_lock.release()
         self.reader_lock.release()
+        print("opening")
 
     def write_acquire(self):
         self.writer_lock.acquire()
