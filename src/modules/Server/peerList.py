@@ -40,13 +40,14 @@ class PeerList(object):
             for peer_id, peer_address in peers_to_register_at:
                 if peer_id >= self.owner.id:
                     continue
-                self.register_peer(peer_id, peer_address)
+                self.peers[peer_id] = orb.Stub(peer_address)
 
-            registered_peers = self.get_peers()
-            for peer_id, peer_address in registered_peers.items():
-                peer = self.peer(peer_id)
-                peer.register_peer(self.owner.id, self.owner.address)
-
+            for peer_id, peer_address in self.peers.items():
+                peer = self.peers[peer_id]
+                try:
+                    peer.register_peer(self.owner.id, self.owner.address)
+                except Exception as e:
+                    del self.peers[peer_id]
         finally:
             self.lock.release()
 
@@ -55,11 +56,15 @@ class PeerList(object):
 
         self.lock.acquire()
         try:
-            registered_peers = self.get_peers()
+            registered_peers = self.peers
             if registered_peers:
                 for peer_id, peer_address in registered_peers.items():
-                    peer = self.peer(peer_id)
-                    peer.unregister_peer(self.owner.id)
+                    print(len(self.peers))
+                    peer = self.peers[peer_id]
+                    try:
+                        peer.unregister_peer(self.owner.id)
+                    except Exception:
+                        continue
         finally:
             self.lock.release()
 

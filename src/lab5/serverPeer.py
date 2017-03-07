@@ -130,9 +130,9 @@ class Server(orb.Peer):
         self.drwlock.write_acquire()
 
         try:
-            self.write_local(fortune)
-            for peer_id in self.peer_list.get_peers():
-                peer = self.peer_list.peer(peer_id)
+            self.db.write(fortune)
+            for peer_id, peer_adress in self.peer_list.peers.items():
+                peer = self.peer_list.peers[peer_id]
                 peer.write_local(fortune)
         finally:
             self.drwlock.write_release()

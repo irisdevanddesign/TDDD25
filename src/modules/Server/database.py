@@ -22,12 +22,15 @@ class Database(object):
         self.rand.seed()
 
         file = open(self.db_file)
-        self.data = file.read().split('%')
+        self.data = file.read().split('"\n" + "%" + "\n"')
+        del self.data[len(self.data)-1]
 
     def read(self):
         """Read a random fortune in the database."""
+        if not len(self.data):
+            return
 
-        randomFortune = self.rand.randint(0, len(self.data))
+        randomFortune = self.rand.randint(0, len(self.data)-1)
         return self.data[randomFortune]
 
     def write(self, fortune):
@@ -35,6 +38,6 @@ class Database(object):
 
         self.data.append(fortune)
         with open(self.db_file, "a") as file:
-            file.write(fortune + "\n" + "%" + "\n")
+            file.write(fortune + "\n%\n")
 
         return

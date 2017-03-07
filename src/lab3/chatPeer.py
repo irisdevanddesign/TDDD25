@@ -131,11 +131,8 @@ while command != "q":
                 to_id = int(command[0:pos])
                 msg = command[pos + 1:]
                 p.send_message(to_id, msg)
-    except (KeyboardInterrupt, UnicodeDecodeError) as e:
-        if e.__class__.__name__ == KeyboardInterrupt:
+    except (KeyboardInterrupt) as e:
             break
-        else:
-            print("Error: " + e.__class__.__name__ + ". Please write message in english.")
 
 # Kill our peer object.
 p.destroy()

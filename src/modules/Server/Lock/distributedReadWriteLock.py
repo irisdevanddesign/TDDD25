@@ -30,6 +30,7 @@ class DistributedReadWriteLock(readWriteLock.ReadWriteLock):
         Override the write_acquire method to include obtaining access
         to the rest of the peers."""
 
+        self.write_acquire_local()
         self.distributed_lock.acquire()
 
     def write_release(self):
@@ -39,9 +40,11 @@ class DistributedReadWriteLock(readWriteLock.ReadWriteLock):
         to the rest of the peers."""
 
         self.distributed_lock.release()
+        self.write_release_local()
 
     def write_acquire_local(self):
         readWriteLock.ReadWriteLock.write_acquire(self)
 
     def write_release_local(self):
         readWriteLock.ReadWriteLock.write_release(self)
+
