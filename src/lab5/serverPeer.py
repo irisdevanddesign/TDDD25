@@ -126,7 +126,6 @@ class Server(orb.Peer):
         attempt to obtain the distributed lock when writing their
         copies."""
 
-        self.peer_list.lock.acquire()
         self.drwlock.write_acquire()
 
         try:
@@ -136,7 +135,6 @@ class Server(orb.Peer):
                 peer.write_local(fortune)
         finally:
             self.drwlock.write_release()
-            self.peer_list.lock.release()
 
     def write_local(self, fortune):
         """Write a fortune to the database.
